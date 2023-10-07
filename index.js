@@ -10,3 +10,13 @@ canvas.height = window.innerHeight;
 // setting background for the gamespace
 c.fillStyle(black);
 c.fillRect(0, 0, canvas.width, canvas.height);
+
+// creating the user character (lil triangle guy)
+class Player {
+  constructor(position) {
+    this.position = position; // {x, y}
+    this.velocity = velocity;
+  }
+}
+
+const player = new Player({ x: 0, y: 0 });
