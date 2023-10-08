@@ -7,22 +7,26 @@ const c = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// setting background for the gamespace
-c.fillStyle = "black";
-c.fillRect(0, 0, canvas.width, canvas.height);
-
 // initial values for triangle spaceship
 class Player {
   constructor({ position, velocity }) {
     this.position = position; // {x, y}
     this.velocity = velocity;
+    this.rotation = 0;
   }
 
   draw() {
+    c.save();
+
+    c.translate(this.position.x, this.position.y);
+    c.rotate(this.rotation);
+    c.translate(-this.position.x, -this.position.y);
+
     c.arc(this.position.x, this.position.y, 5, 0, Math.PI * 2, false);
     c.fillStyle = "red";
     c.fill();
 
+    c.beginPath();
     c.moveTo(this.position.x + 30, this.position.y);
     c.lineTo(this.position.x - 10, this.position.y - 10);
     c.lineTo(this.position.x - 10, this.position.y + 10);
@@ -30,6 +34,15 @@ class Player {
 
     c.strokeStyle = "white";
     c.stroke();
+
+    c.restore();
+  }
+
+  // moves the player based on event listeners below
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
   }
 }
 
@@ -39,37 +52,77 @@ const player = new Player({
   velocity: { x: 0, y: 0 },
 });
 
-player.draw();
-
 const keys = {
   w: {
     pressed: false,
   },
+  a: {
+    pressed: false,
+  },
+  d: {
+    pressed: false,
+  },
 };
+
+// constant variables to increase baseline speed of triangle
+// & the baseline speed of the steering rotation & the deceleration
+const SPEED = 3;
+const ROTATIONAL_SPEED = 0.05;
+const FRICTION = 0.97;
 
 function animate() {
   window.requestAnimationFrame(animate);
+  c.fillStyle = "black";
+  c.fillRect(0, 0, canvas.width, canvas.height);
 
-  player.draw;
+  player.update();
 
-  if (keys.w.pressed) player.velocity.x = 1;
+  player.velocity.x = 0;
+  player.velocity.y = 0;
+
+  if (keys.w.pressed) {
+    player.velocity.x = Math.cos(player.rotation) * SPEED;
+    player.velocity.y = Math.sin(player.rotation) * SPEED;
+  } else if (!keys.w.pressed) {
+    player.velocity.x *= FRICTION;
+    player.velocity.y *= FRICTION;
+  }
+
+  if (keys.d.pressed) player.rotation += ROTATIONAL_SPEED;
+  else if (keys.a.pressed) player.rotation -= ROTATIONAL_SPEED;
 }
 
 animate();
 
 // functionality that listens for keyboard events
 // the spaceship will move based upon these events
+
+// when a key is pressed
 window.addEventListener("keydown", () => {
-  switch (e.code) {
+  switch (event.code) {
     case "KeyW":
       keys.w.pressed = true;
       break;
     case "KeyA":
-      // logic for a key press
+      keys.a.pressed = true;
       break;
     case "KeyD":
-      // logic for d key press
+      keys.d.pressed = true;
       break;
   }
-  console.log(e);
+});
+
+// when a key is NO LONGER pressed
+window.addEventListener("keyup", () => {
+  switch (event.code) {
+    case "KeyW":
+      keys.w.pressed = false;
+      break;
+    case "KeyA":
+      keys.a.pressed = false;
+      break;
+    case "KeyD":
+      keys.d.pressed = false;
+      break;
+  }
 });
