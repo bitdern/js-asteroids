@@ -52,6 +52,29 @@ const player = new Player({
   velocity: { x: 0, y: 0 },
 });
 
+// class for the spaceship's missiles
+class Projectile {
+  constructor({ position }) {
+    this.position = position;
+    this.velocity = velocity;
+    this.radius = 5;
+  }
+
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
+    c.closePath();
+    c.fillStyle = "white";
+    c.fill();
+  }
+
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+  }
+}
+
 const keys = {
   w: {
     pressed: false,
@@ -69,6 +92,9 @@ const keys = {
 const SPEED = 3;
 const ROTATIONAL_SPEED = 0.05;
 const FRICTION = 0.97;
+
+// projectiles
+const projectiles = [];
 
 function animate() {
   window.requestAnimationFrame(animate);
@@ -96,7 +122,6 @@ animate();
 
 // functionality that listens for keyboard events
 // the spaceship will move based upon these events
-
 // when a key is pressed
 window.addEventListener("keydown", () => {
   switch (event.code) {
