@@ -46,15 +46,9 @@ class Player {
   }
 }
 
-// setting initial player position
-const player = new Player({
-  position: { x: canvas.width / 2, y: canvas.height / 2 },
-  velocity: { x: 0, y: 0 },
-});
-
 // class for the spaceship's missiles
 class Projectile {
-  constructor({ position }) {
+  constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
     this.radius = 5;
@@ -75,6 +69,12 @@ class Projectile {
   }
 }
 
+// setting initial player position
+const player = new Player({
+  position: { x: canvas.width / 2, y: canvas.height / 2 },
+  velocity: { x: 0, y: 0 },
+});
+
 const keys = {
   w: {
     pressed: false,
@@ -92,6 +92,7 @@ const keys = {
 const SPEED = 3;
 const ROTATIONAL_SPEED = 0.05;
 const FRICTION = 0.97;
+const PROJECTILE_SPEED = 3;
 
 // projectiles
 const projectiles = [];
@@ -103,8 +104,20 @@ function animate() {
 
   player.update();
 
-  player.velocity.x = 0;
-  player.velocity.y = 0;
+  for (let i = projectiles.length - 1; i >= 0; i--) {
+    const projectile = projectiles[i];
+    projectile.update();
+
+    // removing off-screen projectiles from array
+    if (
+      projectile.position.x + projectile.radius < 0 ||
+      projectile.position.x - projectile.radius > canvas.width ||
+      projectile.position.y - projectile.radius > canvas.height ||
+      projectile.position.y + projectile.radius < 0
+    ) {
+      projectiles.splice(i, 1);
+    }
+  }
 
   if (keys.w.pressed) {
     player.velocity.x = Math.cos(player.rotation) * SPEED;
@@ -123,7 +136,7 @@ animate();
 // functionality that listens for keyboard events
 // the spaceship will move based upon these events
 // when a key is pressed
-window.addEventListener("keydown", () => {
+window.addEventListener("keydown", (event) => {
   switch (event.code) {
     case "KeyW":
       keys.w.pressed = true;
@@ -134,11 +147,25 @@ window.addEventListener("keydown", () => {
     case "KeyD":
       keys.d.pressed = true;
       break;
+    case "Space":
+      projectiles.push(
+        new Projectile({
+          position: {
+            x: player.position.x + Math.cos(player.rotation) * 30,
+            y: player.position.y + Math.sin(player.rotation) * 30,
+          },
+          velocity: {
+            x: Math.cos(player.rotation) * PROJECTILE_SPEED,
+            y: Math.sin(player.rotation) * PROJECTILE_SPEED,
+          },
+        })
+      );
+      break;
   }
 });
 
 // when a key is NO LONGER pressed
-window.addEventListener("keyup", () => {
+window.addEventListener("keyup", (event) => {
   switch (event.code) {
     case "KeyW":
       keys.w.pressed = false;
