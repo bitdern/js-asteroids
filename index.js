@@ -69,6 +69,29 @@ class Projectile {
   }
 }
 
+// class for the asteroids
+class Asteroid {
+  constructor({ position, velocity }) {
+    this.position = position;
+    this.velocity = velocity;
+    this.radius = 50 * Math.random() + 10;
+  }
+
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
+    c.closePath();
+    c.strokeStyle = "white";
+    c.fill();
+  }
+
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+  }
+}
+
 // setting initial player position
 const player = new Player({
   position: { x: canvas.width / 2, y: canvas.height / 2 },
@@ -94,8 +117,26 @@ const ROTATIONAL_SPEED = 0.05;
 const FRICTION = 0.97;
 const PROJECTILE_SPEED = 3;
 
-// projectiles
+// projectiles arry
 const projectiles = [];
+// asterioids array
+const asteriods = [];
+
+// setting up intervals of asteroid spawning
+window.setInterval(() => {
+  asteriods.push(
+    new Asteroid({
+      position: {
+        x: 0,
+        y: 0,
+      },
+      velocity: {
+        x: 0,
+        y: 0,
+      },
+    })
+  );
+}, 3000);
 
 function animate() {
   window.requestAnimationFrame(animate);
