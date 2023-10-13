@@ -122,7 +122,7 @@ const projectiles = [];
 // asterioids array
 const asteriods = [];
 
-// setting up intervals of asteroid spawning
+// setting up intervals of asteroids spawning
 window.setInterval(() => {
   asteriods.push(
     new Asteroid({
