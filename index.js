@@ -71,10 +71,10 @@ class Projectile {
 
 // class for the asteroids
 class Asteroid {
-  constructor({ position, velocity }) {
+  constructor({ position, velocity, radius }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 50 * Math.random() + 10;
+    this.radius = radius;
   }
 
   draw() {
@@ -124,16 +124,31 @@ const asteriods = [];
 
 // setting up intervals of asteroids spawning
 window.setInterval(() => {
+  const index = Math.floor(Math.random() * 4);
+  let x, y;
+  let vx, vy;
+  let radius = 50 * Math.random() + 10;
+
+  switch (index) {
+    case 0: // left side of the screen
+      x = 0 - radius;
+      y = 0 - Math.random() * canvas.height;
+      vx = 1;
+      vy = 0;
+      break;
+  }
+
   asteriods.push(
     new Asteroid({
       position: {
-        x: 0,
-        y: 0,
+        x: x,
+        y: y,
       },
       velocity: {
-        x: 0,
-        y: 0,
+        x: vx,
+        y: vy,
       },
+      radius,
     })
   );
 }, 3000);
@@ -158,6 +173,12 @@ function animate() {
     ) {
       projectiles.splice(i, 1);
     }
+  }
+
+  // asteroid management
+  for (let i = asteroids.length - 1; i >= 0; i--) {
+    const asteroid = asteroids[i];
+    asteroid.update();
   }
 
   if (keys.w.pressed) {
