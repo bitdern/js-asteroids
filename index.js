@@ -222,6 +222,7 @@ window.addEventListener("keydown", (event) => {
           },
         })
       );
+
       break;
   }
 });
