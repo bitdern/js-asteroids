@@ -120,7 +120,7 @@ const PROJECTILE_SPEED = 3;
 // projectiles arry
 const projectiles = [];
 // asterioids array
-const asteriods = [];
+const asteroids = [];
 
 // setting up intervals of asteroids spawning
 window.setInterval(() => {
@@ -132,13 +132,31 @@ window.setInterval(() => {
   switch (index) {
     case 0: // left side of the screen
       x = 0 - radius;
-      y = 0 - Math.random() * canvas.height;
+      y = Math.random() * canvas.height;
       vx = 1;
       vy = 0;
       break;
+    case 1: // bottom side of the screen
+      x = Math.random() * canvas.width;
+      y = canvas.height + radius;
+      vx = 0;
+      vy = -1;
+      break;
+    case 2: // right side of the screen
+      x = canvas.width + radius;
+      y = Math.random() * canvas.height;
+      vx = -1;
+      vy = 0;
+      break;
+    case 3: // top side of the screen
+      x = Math.random() * canvas.width;
+      y = 0 - radius;
+      vx = 0;
+      vy = 1;
+      break;
   }
 
-  asteriods.push(
+  asteroids.push(
     new Asteroid({
       position: {
         x: x,
