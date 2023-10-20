@@ -22,9 +22,11 @@ class Player {
     c.rotate(this.rotation);
     c.translate(-this.position.x, -this.position.y);
 
+    c.beginPath();
     c.arc(this.position.x, this.position.y, 5, 0, Math.PI * 2, false);
     c.fillStyle = "red";
     c.fill();
+    c.closePath();
 
     c.beginPath();
     c.moveTo(this.position.x + 30, this.position.y);
@@ -197,6 +199,15 @@ function animate() {
   for (let i = asteroids.length - 1; i >= 0; i--) {
     const asteroid = asteroids[i];
     asteroid.update();
+  }
+
+  if (
+    asteroid.position.x + asteroid.radius < 0 ||
+    asteroid.position.x - asteroid.radius > canvas.width ||
+    asteroid.position.y - asteroid.radius > canvas.height ||
+    asteroid.position.y + asteroid.radius < 0
+  ) {
+    asteroids.splice(i, 1);
   }
 
   if (keys.w.pressed) {
