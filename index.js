@@ -171,6 +171,8 @@ window.setInterval(() => {
       radius,
     })
   );
+
+  console.log(asteroids);
 }, 3000);
 
 function animate() {
