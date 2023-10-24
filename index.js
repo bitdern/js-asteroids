@@ -174,6 +174,21 @@ const intervalId = window.setInterval(() => {
   console.log(asteroids);
 }, 3000);
 
+function circleCollision(circle1, circle2) {
+  const xDifference = circle2.position.x - circle1.position.x;
+  const yDifference = circle2.position.y - circle1.position.y;
+
+  const distance = Math.sqrt(
+    xDifference * xDifference + yDifference * yDifference
+  );
+
+  if (distance <= circle1.radius + circle2.radius) {
+    return true;
+  }
+
+  return false;
+}
+
 function animate() {
   const animationId = window.requestAnimationFrame(animate);
   c.fillStyle = "black";
@@ -197,11 +212,6 @@ function animate() {
   }
 
   // asteroid management
-  for (let i = asteroids.length - 1; i >= 0; i--) {
-    const asteroid = asteroids[i];
-    asteroid.update();
-  }
-
   if (
     asteroid.position.x + asteroid.radius < 0 ||
     asteroid.position.x - asteroid.radius > canvas.width ||
@@ -211,16 +221,34 @@ function animate() {
     asteroids.splice(i, 1);
   }
 
-  if (keys.w.pressed) {
-    player.velocity.x = Math.cos(player.rotation) * SPEED;
-    player.velocity.y = Math.sin(player.rotation) * SPEED;
-  } else if (!keys.w.pressed) {
-    player.velocity.x *= FRICTION;
-    player.velocity.y *= FRICTION;
-  }
+  // projectiles
+  for (let j = projectiles.length - 1; j >= 0; j--) {
+    const projectile = projectiles[j];
 
-  if (keys.d.pressed) player.rotation += ROTATIONAL_SPEED;
-  else if (keys.a.pressed) player.rotation -= ROTATIONAL_SPEED;
+    if (circleCollision(asteroid, projectile)) {
+      asteroids.splice(i, 1);
+      projectiles.splice(j, 1);
+    }
+  }
+}
+
+if (
+  asteroid.position.x + asteroid.radius < 0 ||
+  asteroid.position.x - asteroid.radius > canvas.width ||
+  asteroid.position.y - asteroid.radius > canvas.height ||
+  asteroid.position.y + asteroid.radius < 0
+) {
+  asteroids.splice(i, 1);
+}
+
+// projectiles
+for (let j = projectiles.length - 1; j >= 0; j--) {
+  const projectile = projectiles[j];
+
+  if (circleCollision(asteroid, projectile)) {
+    asteroids.splice(i, 1);
+    projectiles.splice(j, 1);
+  }
 }
 
 animate();
