@@ -36,7 +36,6 @@ class Player {
 
     c.strokeStyle = "white";
     c.stroke();
-
     c.restore();
   }
 
@@ -84,7 +83,7 @@ class Asteroid {
     c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
     c.closePath();
     c.strokeStyle = "white";
-    c.fill();
+    c.stroke();
   }
 
   update() {
@@ -125,7 +124,7 @@ const projectiles = [];
 const asteroids = [];
 
 // setting up intervals of asteroids spawning
-window.setInterval(() => {
+const intervalId = window.setInterval(() => {
   const index = Math.floor(Math.random() * 4);
   let x, y;
   let vx, vy;
@@ -176,7 +175,7 @@ window.setInterval(() => {
 }, 3000);
 
 function animate() {
-  window.requestAnimationFrame(animate);
+  const animationId = window.requestAnimationFrame(animate);
   c.fillStyle = "black";
   c.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -186,7 +185,7 @@ function animate() {
     const projectile = projectiles[i];
     projectile.update();
 
-    // removing off-screen projectiles from array
+    // garbage collection for projectiles
     if (
       projectile.position.x + projectile.radius < 0 ||
       projectile.position.x - projectile.radius > canvas.width ||
