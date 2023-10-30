@@ -7,7 +7,8 @@ const c = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// initial values for triangle spaceship
+// values for triangle spaceship
+// dictates the base positional value & how the ship moves in space
 class Player {
   constructor({ position, velocity }) {
     this.position = position; // {x, y}
@@ -46,6 +47,7 @@ class Player {
     this.position.y += this.velocity.y;
   }
 
+  // function used to determine whether or not a ship has been hit by asteroid
   getVertices() {
     const cos = Math.cos(this.rotation);
     const sin = Math.sin(this.rotation);
@@ -194,6 +196,7 @@ const intervalId = window.setInterval(() => {
   console.log(asteroids);
 }, 3000);
 
+// function to determine whether or not a projectile has struck an asteroid
 function circleCollision(circle1, circle2) {
   const xDifference = circle2.position.x - circle1.position.x;
   const yDifference = circle2.position.y - circle1.position.y;
@@ -209,8 +212,8 @@ function circleCollision(circle1, circle2) {
   return false;
 }
 
+// function to check if the circle is colliding with any of the triangle's edges
 function circleTriangleCollision(circle, triangle) {
-  // Check if the circle is colliding with any of the triangle's edges
   for (let i = 0; i < 3; i++) {
     let start = triangle[i];
     let end = triangle[(i + 1) % 3];
@@ -309,6 +312,8 @@ function animate() {
     }
   }
 
+  // dictates how much spaceship moves
+  // variables are constant values listed above
   if (keys.w.pressed) {
     player.velocity.x = Math.cos(player.rotation) * SPEED;
     player.velocity.y = Math.sin(player.rotation) * SPEED;
