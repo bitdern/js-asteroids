@@ -138,7 +138,7 @@ const keys = {
 const SPEED = 3;
 const ROTATIONAL_SPEED = 0.05;
 const FRICTION = 0.97;
-const PROJECTILE_SPEED = 3;
+const PROJECTILE_SPEED = 5;
 
 // projectiles arry
 const projectiles = [];
